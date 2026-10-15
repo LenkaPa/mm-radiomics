@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+# lets `pytest` import the mmrad package from the repository root
+pythonpath = ["."]
+testpaths = ["tests"]
