@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# data a výsledky do repozitáře nepatří
+data/
+results/
+*.nii.gz
+*.dcm
+.DS_Store
