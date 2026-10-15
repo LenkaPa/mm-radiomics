@@ -26,10 +26,30 @@ data/
 
 ## Installation
 
+The code is plain Python and runs the same on macOS, Linux and Windows. Only the one-time setup differs.
+
+### 1. Install Miniforge (conda)
+
+Follow <https://github.com/conda-forge/miniforge>.
+
+### 2. Install a C compiler (needed once to build PyRadiomics)
+
+| System | What to do |
+|---|---|
+| macOS | in Terminal: `xcode-select --install` |
+| Linux | usually already present; otherwise e.g. `sudo apt install build-essential` |
+| Windows | install [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with the *Desktop development with C++* workload |
+
+### 3. Create the environment
+
+Open a terminal (on Windows: *Miniforge Prompt* from the Start menu), go to the repository folder and run:
+
 ```bash
 conda env create -f environment.yml
 conda activate mmrad
 ```
+
+After that, every command below is the same on all systems.
 
 ## Usage
 
