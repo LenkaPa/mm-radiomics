@@ -8,10 +8,15 @@ dependencies:
   - pandas
   - pyyaml
   - simpleitk
-  - pyradiomics
   - statsmodels
   - pingouin        # ICC
   - plotly
   - jinja2
   - matplotlib
   - pytest
+  - git
+  - pip
+  - pip:
+      # PyRadiomics is not on conda-forge for Apple Silicon and its PyPI wheels end at Python 3.9,
+      # so it is built from a pinned commit of the official repository (needs a C compiler, see README)
+      - pyradiomics @ git+https://github.com/AIM-Harvard/pyradiomics.git@8ed579383b44806651c463d5e691f3b2b57522ab
