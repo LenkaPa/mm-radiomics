@@ -13,7 +13,7 @@ and relates them to clinical markers of multiple myeloma. Results are summarised
 Data are not part of this repository.
 
 - Images and masks: Spinal-Multiple-Myeloma-SEG on TCIA, DOI [10.7937/k4qv-hh78](https://doi.org/10.7937/k4qv-hh78)
-- Trabecular masks (optional): Zenodo, DOI [10.5281/zenodo.21628232](https://doi.org/10.5281/zenodo.21628232)
+- Trabecular masks: Zenodo, DOI [10.5281/zenodo.21628232](https://doi.org/10.5281/zenodo.21628232)
 
 Expected layout:
 
