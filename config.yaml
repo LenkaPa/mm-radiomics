@@ -1,0 +1,55 @@
+# Všechna nastavení pipeline na jednom místě.
+# Spuštění:  python run.py --config config.yaml
+# Jen kontrola vstupů:  python run.py --config config.yaml --check
+
+# --- vstupy ---
+paths:
+  images: data/dicom              # složka s DICOM (prohledá se rekurzivně)
+  masks: data/masks               # NIfTI masky páteře a lézí (MM_NIfTI_Segmentation)
+  trabecular_masks: data/zenodo   # volitelné, pro healthy_bone: trabecular
+  clinical: data/Spinal-Multiple-Myeloma-SEG_Table_clinical_data.tsv
+  output: results/
+
+patients: all                     # nebo seznam pro ladění: [Myel_003, Myel_005]
+exclude_vertebrae: {}             # např. {Myel_001: [L4, L5]} – obratle s implantátem apod.
+
+# dohoda s vedoucím (15. 10. 2026): jen VMI 40 keV a potlačení vápníku
+reconstructions: [VMI40, CaSupp25, CaSupp50, CaSupp75, CaSupp100]
+
+# --- ROI ---
+roi:
+  healthy_bone: vertebra_minus_lesions   # nebo: trabecular
+  lesion_dilation_mm: 3
+  lesion_min_volume_mm3: 50
+
+# --- extrakce ---
+extraction:
+  params_file: params/pyradiomics.yaml
+  resample_mm: [1.0, 1.0, 1.0]
+  bin_width: 25
+
+# --- RQ2 robustnost ---
+robustness:
+  perturbations:
+    mask: [erode_1voxel, dilate_1voxel]
+    resample_mm: [0.8, 1.5]
+  icc_type: ICC2
+  icc_threshold: 0.75
+  redundancy_threshold: 0.9
+
+# --- RQ4 klinika ---
+clinical:
+  one_exam_per_patient: first
+  markers: [Plasmocyte count FC (%), Beta2 microglobulin (mg/l), Serum M-protein quantity (g/l),
+            Serum kappa FLC quantity (mg/l), Serum lambda FLC quantity (mg/l),
+            Calcium total level (mmol/l), Creatinine level (µmol/l), ISS classification]
+  fdr_alpha: 0.05
+  confirmatory_rq4a:
+    reconstruction: CaSupp50      # provizorně, index potvrdit s vedoucím
+    roi: healthy_bone
+    features: [firstorder_10Percentile, firstorder_Uniformity, firstorder_Entropy,
+               glcm_Contrast, glcm_DifferenceAverage, glcm_DifferenceEntropy]   # Reinert 2021
+    marker: Plasmocyte count FC (%)
+
+report:
+  format: html

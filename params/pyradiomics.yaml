@@ -1,0 +1,16 @@
+# Nastavení PyRadiomics (https://pyradiomics.readthedocs.io/en/latest/customization.html)
+setting:
+  binWidth: 25
+  resampledPixelSpacing: [1, 1, 1]
+  interpolator: sitkBSpline
+  label: 1
+imageType:
+  Original: {}
+featureClass:
+  firstorder:
+  glcm:
+  glrlm:
+  glszm:
+  gldm:
+  ngtdm:
+  shape:

@@ -1,0 +1,17 @@
+name: mmrad
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - scipy
+  - pandas
+  - pyyaml
+  - simpleitk
+  - pyradiomics
+  - statsmodels
+  - pingouin        # ICC
+  - plotly
+  - jinja2
+  - matplotlib
+  - pytest
