@@ -8,6 +8,7 @@ paths:
   masks: data/masks               # NIfTI masky páteře a lézí (MM_NIfTI_Segmentation)
   trabecular_masks: data/zenodo   # volitelné, pro healthy_bone: trabecular
   clinical: data/Spinal-Multiple-Myeloma-SEG_Table_clinical_data.tsv
+  fnb_table: data/sCTmyelomForVUT16_9_2026.xlsx  # tabulka od FNB (10. 11. 2026): CTCs, klonální PC, cytogenetika, PS, data
   output: results/
 
 patients: all                     # nebo seznam pro ladění: [Myel_003, Myel_005]
@@ -40,12 +41,24 @@ robustness:
 # --- RQ4 klinika ---
 clinical:
   one_exam_per_patient: first
+  # vedoucí 10. 11. 2026: analyzují se všechny úrovně (páteř, obratel, léze),
+  # ale report a testy se dělají po pacientech (příznaky lézí/obratlů se agregují na pacienta)
+  report_level: patient
+  # radiologové FNB 3. 11. 2026: jen vyšetření při diagnóze, ± 1 měsíc.
+  # Tabulka FNB nemá datum odběru dřeně, proto: Date of CT vs. Initiation of 1st line treatment
+  at_diagnosis_window_days: 31        # → 39 pacientů
+  # hypotézy schválené vedoucím 10. 11. 2026, sloupce z tabulky FNB
+  hypotheses:
+    H1: {marker: "CTCs %", test: spearman}
+    H2: {marker: "Plasmocyte count FC (%)", test: spearman}
+    H3: {marker: "Extraosseous MM", test: mann_whitney}     # PS (vč. PS + EMD) vs. ne
+    H4: {marker: [del17p, primary event], test: mann_whitney}  # del17p nebo t(4;14)/t(14;16)/t(14;20)
   markers: [Plasmocyte count FC (%), Beta2 microglobulin (mg/l), Serum M-protein quantity (g/l),
             Serum kappa FLC quantity (mg/l), Serum lambda FLC quantity (mg/l),
             Calcium total level (mmol/l), Creatinine level (µmol/l), ISS classification]
   fdr_alpha: 0.05
   confirmatory_rq4a:
-    reconstruction: CaSupp50      # provizorně, index potvrdit s vedoucím
+    reconstruction: CaSupp25      # vedoucí 10. 11. 2026: index 25, stejně jako Rišian 2026
     roi: healthy_bone
     features: [firstorder_10Percentile, firstorder_Uniformity, firstorder_Entropy,
                glcm_Contrast, glcm_DifferenceAverage, glcm_DifferenceEntropy]   # Reinert 2021
