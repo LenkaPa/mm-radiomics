@@ -61,6 +61,24 @@ def n_two_groups(d, p_minor, alpha=0.05, power=0.8, mann_whitney=True):
     return math.ceil(n)
 
 
+def min_detectable_d(n, p_minor, alpha=0.05, power=0.8, mann_whitney=True):
+    """Nejmenší rozdíl skupin (Cohenovo d), který při n pacientech ještě zachytím."""
+    d = z_sum(alpha, power) / math.sqrt(n * p_minor * (1 - p_minor))
+    if mann_whitney:
+        d /= math.sqrt(ARE_MANN_WHITNEY)
+    return d
+
+
+# Skutečná kohorta "při diagnóze" (CT do ± 31 dní od zahájení 1. linie léčby),
+# spočítáno z tabulky FNB sCTmyelomForVUT16_9_2026.xlsx dne 10. 11. 2026.
+COHORT = {
+    "H1 CTCs (%) – korelace": ("corr", 35, None),
+    "H2 % plazmocytů FC – korelace": ("corr", 39, None),
+    "H3 paraskeletální ložisko ano/ne": ("groups", 37, 14 / 37),
+    "H4 vysoce riziková cytogenetika ano/ne": ("groups", 24, 8 / 24),
+}
+
+
 def d_from_r(r):
     """Převod korelace na Cohenovo d (Cohen 1988), jen pro orientační srovnání."""
     return 2 * r / math.sqrt(1 - r ** 2)
@@ -103,6 +121,17 @@ def main():
             row = " ".join(f"{n_two_groups(d, p, 0.05 / k, pw):>9}" for k in args.features)
             print(f"{d:>5.1f} {p:>10.0%} {row}")
     print(f"\n(pro srovnání: r = 0.49 odpovídá d = {d_from_r(0.49):.2f})")
+
+    print("\nSKUTEČNÁ KOHORTA PŘI DIAGNÓZE – nejmenší zachytitelný efekt")
+    for name, (kind, n, p) in COHORT.items():
+        if kind == "corr":
+            row = ", ".join(f"{k} příz.: |r| >= {min_detectable_r(n, 0.05 / k, pw):.2f}"
+                            for k in args.features)
+        else:
+            row = ", ".join(f"{k} příz.: d >= {min_detectable_d(n, p, 0.05 / k, pw):.2f}"
+                            for k in args.features)
+        extra = "" if p is None else f", menší skupina {p:.0%}"
+        print(f"  {name} (N = {n}{extra}): {row}")
 
 
 if __name__ == "__main__":

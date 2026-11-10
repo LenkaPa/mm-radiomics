@@ -8,7 +8,7 @@ paths:
   masks: data/masks               # NIfTI masky páteře a lézí (MM_NIfTI_Segmentation)
   trabecular_masks: data/zenodo   # volitelné, pro healthy_bone: trabecular
   clinical: data/Spinal-Multiple-Myeloma-SEG_Table_clinical_data.tsv
-  cytogenetics: data/cytogenetika.xlsx  # tabulka od FNB (cytogenetika + data diagnózy), název upravit
+  fnb_table: data/sCTmyelomForVUT16_9_2026.xlsx  # tabulka od FNB (10. 11. 2026): CTCs, klonální PC, cytogenetika, PS, data
   output: results/
 
 patients: all                     # nebo seznam pro ladění: [Myel_003, Myel_005]
@@ -44,14 +44,15 @@ clinical:
   # vedoucí 10. 11. 2026: analyzují se všechny úrovně (páteř, obratel, léze),
   # ale report a testy se dělají po pacientech (příznaky lézí/obratlů se agregují na pacienta)
   report_level: patient
-  # radiologové FNB 3. 11. 2026: jen vyšetření při diagnóze = datum odběru dřeně ± 1 měsíc
-  at_diagnosis_window_days: 31
-  # hypotézy schválené vedoucím 10. 11. 2026 (marker se doplní, až bude tabulka z FNB)
+  # radiologové FNB 3. 11. 2026: jen vyšetření při diagnóze, ± 1 měsíc.
+  # Tabulka FNB nemá datum odběru dřeně, proto: Date of CT vs. Initiation of 1st line treatment
+  at_diagnosis_window_days: 31        # → 39 pacientů
+  # hypotézy schválené vedoucím 10. 11. 2026, sloupce z tabulky FNB
   hypotheses:
-    H1: {marker: circulating plasma cells (CTCs), data: FNB}
-    H2: {marker: Plasmocyte count FC (%), data: TCIA}
-    H3: {marker: paraskeletal plasmacytoma (ano/ne), data: FNB}
-    H4: {marker: high-risk cytogenetics (ano/ne), data: FNB}
+    H1: {marker: "CTCs %", test: spearman}
+    H2: {marker: "Plasmocyte count FC (%)", test: spearman}
+    H3: {marker: "Extraosseous MM", test: mann_whitney}     # PS (vč. PS + EMD) vs. ne
+    H4: {marker: [del17p, primary event], test: mann_whitney}  # del17p nebo t(4;14)/t(14;16)/t(14;20)
   markers: [Plasmocyte count FC (%), Beta2 microglobulin (mg/l), Serum M-protein quantity (g/l),
             Serum kappa FLC quantity (mg/l), Serum lambda FLC quantity (mg/l),
             Calcium total level (mmol/l), Creatinine level (µmol/l), ISS classification]

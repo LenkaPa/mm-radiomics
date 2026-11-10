@@ -20,3 +20,8 @@ def test_min_detectable_r_is_inverse():
 def test_two_groups_equal_split():
     # d = 0.8, skupiny 50/50, t-test ~ 50 celkem; Mann–Whitney o něco víc
     assert 49 <= pa.n_two_groups(0.8, 0.5, mann_whitney=False) <= 52
+
+
+def test_min_detectable_d_is_inverse():
+    d = pa.min_detectable_d(37, 0.38)
+    assert pa.n_two_groups(d + 0.01, 0.38) <= 37 < pa.n_two_groups(d - 0.05, 0.38)
